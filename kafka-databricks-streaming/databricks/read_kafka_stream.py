@@ -3,7 +3,7 @@ from pyspark.sql.functions import *
 df_raw = (
   spark.readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "YOUR_PUBLIC_IP:9092")
+      .option("kafka.bootstrap.servers", "10.0.0.104:9092")
       .option("subscribe", "user-events")
       .load()
 )

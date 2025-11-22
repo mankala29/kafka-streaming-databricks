@@ -1,30 +1,21 @@
-from confluent_kafka import SerializingProducer
-from confluent_kafka.schema_registry.avro import AvroSerializer
-from confluent_kafka.schema_registry import SchemaRegistryClient
-import time, uuid, random
+from kafka import KafkaProducer
+import json, time, uuid, random
 
-schema_str = open("/Users/swetamankala/Desktop/Kafka/kafka-databricks-streaming/schema/user_event.avsc").read()
+producer = KafkaProducer(
+    bootstrap_servers=["localhost:9092"],
+    value_serializer=lambda x: json.dumps(x).encode("utf-8")
+)
 
-sr = SchemaRegistryClient({"url": "http://localhost:8081"})
-value_serializer = AvroSerializer(sr, schema_str)
-
-producer = SerializingProducer({
-    "bootstrap.servers": "localhost:9092",
-    "value.serializer": value_serializer
-})
-
-actions = ["login", "logout", "purchase", "view"]
+actions = ["view", "click", "purchase", "logout"]
 
 while True:
     event = {
         "event_id": str(uuid.uuid4()),
-        "user_id": str(random.randint(1, 50)),
+        "user_id": random.randint(1, 100),
         "action": random.choice(actions),
-        "timestamp": int(time.time() * 1000)
+        "ts": int(time.time() * 1000)
     }
 
-    producer.produce(topic="user-events", value=event)
-    producer.flush()
-
+    producer.send("user-events", event)
     print("Sent:", event)
     time.sleep(1)
