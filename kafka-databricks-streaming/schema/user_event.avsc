@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "UserEvent",
+  "namespace": "com.sweta.kafka",
+  "fields": [
+    { "name": "event_id", "type": "string" },
+    { "name": "user_id", "type": "string" },
+    { "name": "action", "type": "string" },
+    { "name": "timestamp", "type": "long" }
+  ]
+}
